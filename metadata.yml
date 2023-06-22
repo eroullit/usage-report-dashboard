@@ -1,0 +1,66 @@
+title: Actions Datasette Dashboards Demo
+about: eroullit/actions-datasette-dashboards
+about_url: https://github.com/eroullit/actions-datasette-dashboards
+description_html: |-
+  <div class="message-info">
+    <p>Welcome to the <a href="https://github.com/eroullit/actions-datasette-dashboards">Actions-Datasette-Dashboards</a> Actions Datasette Dashboard!</p>
+    <ul class="bullets">
+      <li>Browse dashboards at <a href="/-/dashboards">/-/dashboards</a></li>
+      <li>See an example of an embedded dashboard within a custom page at <a href="/embedded_dashboard">/embedded_dashboard</a></li>
+      <li>See an example of an embedded chart within a custom page at <a href="/embedded_chart">/embedded_chart</a></li>
+    </ul>
+  </div>
+
+plugins:
+  datasette-sqlite-http:
+    UNSAFE_allow_http_requests: true
+
+  datasette-dashboards:
+    usage-stats:
+      title: Actions usage statistics
+      description: Gather metrics about Actions usage from the Usage Report
+      settings:
+        allow_fullscreen: true
+        autorefresh: 1
+      layout:
+        - [analysis-note, actions-run-count]
+        - [analysis-note, runner-type-count]
+      filters:
+        date_start:
+          name: Date Start
+          type: date
+        date_end:
+          name: Date End
+          type: date
+        owner:
+          name: Organisation
+          type: select
+          db: usage
+          query: SELECT DISTINCT owner FROM usage ORDER BY owner
+      charts:
+        analysis-note:
+          library: markdown
+          display: |-
+            # Analysis details
+
+            Actions usage display
+
+        actions-run-count:
+          title: Total number of actions runs
+          db: usage
+          query: SELECT count(*) as count FROM usage WHERE TRUE [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
+          library: metric
+          display:
+            field: count
+            prefix:
+            suffix: " Actions workflow runs"
+
+        runner-type-count:
+          title: Distinct count of Actions runner type
+          db: usage
+          query: SELECT count(*) as count FROM usage WHERE TRUE [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
+          library: metric
+          display:
+            field: count
+            prefix:
+            suffix: " Actions runner type"
