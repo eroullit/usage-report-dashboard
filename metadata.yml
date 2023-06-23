@@ -48,7 +48,7 @@ plugins:
         actions-run-count:
           title: Total number of actions runs
           db: usage
-          query: SELECT count(*) as count FROM usage WHERE TRUE [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
+          query: SELECT count(*) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
           library: metric
           display:
             field: count
@@ -58,7 +58,7 @@ plugins:
         runner-type-count:
           title: Distinct count of Actions runner type
           db: usage
-          query: SELECT count(*) as count FROM usage WHERE TRUE [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
+          query: SELECT COUNT(DISTINCT SKU) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
           library: metric
           display:
             field: count
