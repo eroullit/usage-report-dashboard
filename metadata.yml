@@ -24,7 +24,7 @@ plugins:
         autorefresh: 1
       layout:
         - [analysis-note, actions-run-count]
-        - [analysis-note, runner-type-count]
+        - [runner-type-count, actions-run-daily]
       filters:
         date_start:
           name: Date Start
@@ -64,3 +64,14 @@ plugins:
             field: count
             prefix:
             suffix: " Actions runner type"
+
+        actions-run-daily:
+          title: Number of actions run by day
+          db: usage
+          query: SELECT date(date) as day, count(*) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] GROUP BY day ORDER BY day
+          library: vega-lite
+          display:
+            mark: { type: line, tooltip: true }
+            encoding:
+              x: { field: day, type: temporal, timeUnit: yearmonthdate }
+              y: { field: count, type: quantitative }
