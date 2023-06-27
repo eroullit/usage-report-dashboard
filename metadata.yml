@@ -25,6 +25,7 @@ plugins:
       layout:
         - [actions-run-count, runner-type-count]
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
+        - [runner-types-ranking, actions-run-daily]
       filters:
         date_start:
           name: Date Start
@@ -151,6 +152,24 @@ plugins:
               x: { field: TotalQuantity, type: quantitative }
               y: { field: Date, type: ordinal, timeUnit: month, as: month}
               color: { field: SKU, type: nominal }
+              opacity:
+                condition: { param: highlight, value: 1 }
+                value: 0.2
+
+        runner-types-ranking:
+          title: Number of runs by runner types
+          db: usage 
+          query: SELECT SKU, count(*) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] GROUP BY SKU ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, tooltip: true }
+            params:
+              - name: highlight
+                select: { fields: [SKU], type: point, "on": mouseover }
+                bind: legend
+            encoding:
+              color: { field: SKU, type: nominal }
+              theta: { field: count, type: quantitative }
               opacity:
                 condition: { param: highlight, value: 1 }
                 value: 0.2
