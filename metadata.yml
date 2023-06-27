@@ -23,8 +23,8 @@ plugins:
         allow_fullscreen: true
         autorefresh: 1
       layout:
-        - [analysis-note, actions-run-count]
-        - [runner-type-count, actions-run-daily]
+        - [actions-run-count, runner-type-count]
+        - [actions-run-daily, actions-minutes-tracker]
       filters:
         date_start:
           name: Date Start
@@ -82,7 +82,7 @@ plugins:
           query: >-
             SELECT
               date(date) as Date,
-              SUM(quantity) as TotalQuantity,
+              SUM(quantity * multiplier) as TotalQuantity,
               COUNT(DISTINCT Username) as TotalUsers,
               COUNT(DISTINCT "Repository Slug") as TotalRepositories
             FROM usage
@@ -94,3 +94,33 @@ plugins:
             ORDER BY date DESC
           library: table
           display:
+
+        actions-minutes-tracker:
+          title: Daily minutes usage tracker
+          db: usage
+          query: >-
+            SELECT
+              date(date) as Date,
+              SKU,
+              SUM(quantity * multiplier) as TotalQuantity
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+            GROUP BY date, SKU
+            ORDER by date
+          library: vega-lite
+          display:
+            mark: { type: bar, tooltip: true }
+            params:
+              - name: highlight
+                select: { fields: [SKU], type: point, "on": mouseover }
+                bind: legend
+            encoding:
+              x: { field: Date, type: ordinal, timeUnit: yearmonthdate }
+              y: { field: TotalQuantity, type: quantitative }
+              color: { field: SKU, type: nominal }
+              opacity:
+                condition: { param: highlight, value: 1 }
+                value: 0.2
