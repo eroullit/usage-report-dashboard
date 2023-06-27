@@ -24,7 +24,7 @@ plugins:
         autorefresh: 1
       layout:
         - [actions-run-count, runner-type-count]
-        - [actions-run-daily, actions-minutes-tracker]
+        - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
       filters:
         date_start:
           name: Date Start
@@ -95,7 +95,7 @@ plugins:
           library: table
           display:
 
-        actions-minutes-tracker:
+        actions-minutes-daily-tracker:
           title: Daily minutes usage tracker
           db: usage
           query: >-
@@ -120,6 +120,36 @@ plugins:
             encoding:
               x: { field: Date, type: ordinal, timeUnit: yearmonthdate }
               y: { field: TotalQuantity, type: quantitative }
+              color: { field: SKU, type: nominal }
+              opacity:
+                condition: { param: highlight, value: 1 }
+                value: 0.2
+
+        actions-minutes-monthly-tracker:
+          title: Monthly minutes usage tracker
+          db: usage
+          query: >-
+            SELECT
+              date(date) as Date,
+              SKU,
+              SUM(quantity * multiplier) as TotalQuantity
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+            GROUP BY Date, SKU
+            ORDER BY Date
+          library: vega-lite
+          display:
+            mark: { type: bar, tooltip: true }
+            params:
+              - name: highlight
+                select: { fields: [SKU], type: point, "on": mouseover }
+                bind: legend
+            encoding:
+              x: { field: TotalQuantity, type: quantitative }
+              y: { field: Date, type: ordinal, timeUnit: month, as: month}
               color: { field: SKU, type: nominal }
               opacity:
                 condition: { param: highlight, value: 1 }
