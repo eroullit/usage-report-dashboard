@@ -40,14 +40,23 @@ plugins:
           query: SELECT DISTINCT owner FROM usage ORDER BY owner
       charts:
         actions-run-daily:
-          title: Number of actions run by day
+          title: Daily executed workflow count
           db: usage
-          query: SELECT date(date) as day, count(*) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] GROUP BY day ORDER BY day
+          query: >-
+            SELECT
+              date(date) as date,
+              count(*) as count
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+              GROUP BY date
           library: vega-lite
           display:
             mark: { type: line, tooltip: true }
             encoding:
-              x: { field: day, type: temporal, timeUnit: yearmonthdate }
+              x: { field: date, type: temporal, timeUnit: yearmonthdate }
               y: { field: count, type: quantitative }
 
         actions-minutes-daily-tracker:
@@ -55,7 +64,7 @@ plugins:
           db: usage
           query: >-
             SELECT
-              date(date) as Date,
+              date(date) as date,
               SKU,
               SUM(quantity * multiplier) as TotalQuantity
             FROM usage
@@ -72,7 +81,7 @@ plugins:
                 select: { fields: [SKU], type: point, "on": mouseover }
                 bind: legend
             encoding:
-              x: { field: Date, type: ordinal, timeUnit: yearmonthdate }
+              x: { field: date, type: temporal, timeUnit: yearmonthdate }
               y: { field: TotalQuantity, type: quantitative }
               color: { field: SKU, type: nominal }
               opacity:
@@ -84,7 +93,7 @@ plugins:
           db: usage
           query: >-
             SELECT
-              date(date) as Date,
+              date(date) as date,
               SKU,
               SUM(quantity * multiplier) as TotalQuantity
             FROM usage
@@ -92,8 +101,7 @@ plugins:
               [[ AND date >= date(:date_start) ]]
               [[ AND date <= date(:date_end) ]]
               [[ AND owner = :owner ]]
-            GROUP BY Date, SKU
-            ORDER BY Date
+            GROUP BY date, SKU
           library: vega-lite
           display:
             mark: { type: bar, tooltip: true }
@@ -103,7 +111,7 @@ plugins:
                 bind: legend
             encoding:
               x: { aggregate: sum, field: TotalQuantity, type: quantitative }
-              y: { field: Date, type: ordinal, timeUnit: month, as: month}
+              y: { field: date, type: ordinal, timeUnit: month, as: month}
               color: { field: SKU, type: nominal }
               opacity:
                 condition: { param: highlight, value: 1 }
@@ -112,7 +120,17 @@ plugins:
         runner-types-ranking:
           title: Number of runs by runner types
           db: usage 
-          query: SELECT SKU, count(*) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] GROUP BY SKU ORDER BY count DESC
+          query: >-
+            SELECT
+              SKU,
+              count(*) as count
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+            GROUP BY SKU
+            ORDER BY count DESC
           library: vega-lite
           display:
             mark: { type: arc, tooltip: true }
