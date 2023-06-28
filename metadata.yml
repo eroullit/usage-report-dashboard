@@ -21,7 +21,7 @@ plugins:
       description: Gather metrics about Actions usage from the Usage Report
       settings:
         allow_fullscreen: true
-        autorefresh: 1
+        autorefresh: false
       layout:
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
