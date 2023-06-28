@@ -102,7 +102,7 @@ plugins:
                 select: { fields: [SKU], type: point, "on": mouseover }
                 bind: legend
             encoding:
-              x: { field: TotalQuantity, type: quantitative }
+              x: { aggregate: sum, field: TotalQuantity, type: quantitative }
               y: { field: Date, type: ordinal, timeUnit: month, as: month}
               color: { field: SKU, type: nominal }
               opacity:
