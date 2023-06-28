@@ -26,6 +26,7 @@ plugins:
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
         - [actions-duration-ranking, actions-duration-ranking]
+        - [actions-duration-scatterplot, actions-duration-scatterplot]
       filters:
         date_start:
           name: Date Start
@@ -171,3 +172,34 @@ plugins:
               y: { field: quantity, bin: {extent: [0, 45]}, type: ordinal }
               x: { aggregate: sum, field: count}
               color: { field: SKU, type: nominal }
+
+        actions-duration-scatterplot:
+          title: actions duration scatterplot
+          db: usage
+          query: >-
+            SELECT
+              date(date) as date,
+              CAST(quantity as INTEGER) as quantity,
+              SKU,
+              Owner,
+              "Repository Slug",
+              "Actions Workflow"
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+          library: vega-lite
+          display:
+            mark: { type: point, tooltip: {content: data} }
+            params:
+              - name: highlight
+                select: { fields: [SKU], type: point, "on": mouseover }
+                bind: legend
+            encoding:
+              x: { field: date, type: ordinal, timeUnit: yearmonthdate }
+              y: { field: quantity, type: quantitative }
+              color: { field: SKU, type: nominal }
+              opacity:
+                condition: { param: highlight, value: 1 }
+                value: 0.2
