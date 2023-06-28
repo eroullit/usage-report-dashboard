@@ -172,9 +172,12 @@ plugins:
               y: { field: quantity, bin: {extent: [0, 45]}, type: ordinal }
               x: { aggregate: sum, field: count}
               color: { field: SKU, type: nominal }
+              opacity:
+                condition: { param: highlight, value: 1 }
+                value: 0.2
 
         actions-duration-scatterplot:
-          title: actions duration scatterplot
+          title: Workflow duration
           db: usage
           query: >-
             SELECT
