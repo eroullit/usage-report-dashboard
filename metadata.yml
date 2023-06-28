@@ -25,6 +25,7 @@ plugins:
       layout:
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
+        - [actions-duration-ranking, actions-duration-ranking]
       filters:
         date_start:
           name: Date Start
@@ -63,7 +64,6 @@ plugins:
               [[ AND date <= date(:date_end) ]]
               [[ AND owner = :owner ]]
             GROUP BY date, SKU
-            ORDER by date
           library: vega-lite
           display:
             mark: { type: bar, tooltip: true }
@@ -126,3 +126,30 @@ plugins:
               opacity:
                 condition: { param: highlight, value: 1 }
                 value: 0.2
+
+        actions-duration-ranking:
+          title: actions duration ranking
+          db: usage
+          query: >-
+            SELECT
+              CAST(quantity as INTEGER) as quantity,
+              SKU,
+              COUNT(*) as count
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+            GROUP BY quantity, SKU
+            ORDER BY quantity
+          library: vega-lite
+          display:
+            mark: { type: bar, tooltip: true }
+            params:
+              - name: highlight
+                select: { fields: [SKU], type: point, "on": mouseover }
+                bind: legend
+            encoding:
+              y: { field: quantity, bin: {extent: [0, 45]}, type: ordinal }
+              x: { aggregate: sum, field: count}
+              color: { field: SKU, type: nominal }
