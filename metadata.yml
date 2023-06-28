@@ -23,7 +23,6 @@ plugins:
         allow_fullscreen: true
         autorefresh: 1
       layout:
-        - [actions-run-count, runner-type-count]
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
       filters:
@@ -39,33 +38,6 @@ plugins:
           db: usage
           query: SELECT DISTINCT owner FROM usage ORDER BY owner
       charts:
-        analysis-note:
-          library: markdown
-          display: |-
-            # Analysis details
-
-            Actions usage display
-
-        actions-run-count:
-          title: Total number of actions runs
-          db: usage
-          query: SELECT count(*) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
-          library: metric
-          display:
-            field: count
-            prefix:
-            suffix: " Actions workflow runs"
-
-        runner-type-count:
-          title: Distinct count of Actions runner type
-          db: usage
-          query: SELECT COUNT(DISTINCT SKU) as count FROM usage WHERE Product = 'Actions' [[ AND date >= date(:date_start) ]] [[ AND date <= date(:date_end) ]] [[ AND owner = :owner ]] ;
-          library: metric
-          display:
-            field: count
-            prefix:
-            suffix: " Actions runner type"
-
         actions-run-daily:
           title: Number of actions run by day
           db: usage
