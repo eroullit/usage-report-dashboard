@@ -1,13 +1,11 @@
-title: Actions Datasette Dashboards Demo
-about: eroullit/actions-datasette-dashboards
-about_url: https://github.com/eroullit/actions-datasette-dashboards
+title: Actions Workflow Dashboard
+about: eroullit/actions-workflow-dashboard
+about_url: https://github.com/eroullit/actions-workflow-dashboard
 description_html: |-
   <div class="message-info">
-    <p>Welcome to the <a href="https://github.com/eroullit/actions-datasette-dashboards">Actions-Datasette-Dashboards</a> Actions Datasette Dashboard!</p>
+    <p>Welcome to the <a href="https://github.com/eroullit/actions-workflow-dashboard">Actions Workflow Dashboard</a>!</p>
     <ul class="bullets">
       <li>Browse dashboards at <a href="/-/dashboards">/-/dashboards</a></li>
-      <li>See an example of an embedded dashboard within a custom page at <a href="/embedded_dashboard">/embedded_dashboard</a></li>
-      <li>See an example of an embedded chart within a custom page at <a href="/embedded_chart">/embedded_chart</a></li>
     </ul>
   </div>
 
