@@ -10,7 +10,7 @@ Its usage is purely offline. It neither requires data to be sent to a third part
 Install the project dependencies:
 
 ```bash
-$ brew install datasette
+$ brew install datasette sqlite-utils
 $ datasette install datasette-dashboards
 ```
 
