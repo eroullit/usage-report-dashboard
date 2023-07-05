@@ -1,0 +1,12 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "waitFor": "onCreateCommand",
+    "onCreateCommand": "pipx install sqlite-utils && pipx install datasette && datasette install datasette-dashboard datasette-codespaces",
+    "customizations": {
+      "codespaces": {
+        "openFiles": [
+          "metadata.yml"
+        ]
+      }
+  }
+}
