@@ -146,7 +146,7 @@ plugins:
                 value: 0.2
 
         actions-duration-ranking:
-          title: actions duration ranking
+          title: Actions duration ranking
           db: usage
           query: >-
             SELECT
