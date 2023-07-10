@@ -2,6 +2,11 @@
     "waitFor": "onCreateCommand",
     "onCreateCommand": "pipx install sqlite-utils && pipx install datasette && datasette install datasette-dashboards datasette-codespaces",
     "customizations": {
+      "vscode": {
+        "extensions": [
+          "rioj7.command-variable"
+        ]
+      },
       "codespaces": {
         "openFiles": [
           "metadata.yml"
