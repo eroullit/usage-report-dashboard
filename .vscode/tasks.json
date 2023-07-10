@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Actions Usage Dashboard",
+            "type": "shell",
+            "command": "${workspaceFolder}/run.sh",
+            "args": [
+                "${input:filePick}"
+            ],
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+          "id": "filePick",
+          "type": "command",
+          "command": "extension.commandvariable.file.pickFile",
+          "args": {
+            "include": "**/*.{csv}"
+          }
+        }
+      ]
+}
