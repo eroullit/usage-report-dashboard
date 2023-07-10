@@ -2,14 +2,20 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Actions Usage Dashboard",
+            "label": "Prepare Actions Usage Dashboard",
             "type": "shell",
             "command": "${workspaceFolder}/run.sh",
             "args": [
                 "${input:filePick}"
             ],
             "problemMatcher": []
-        }
+        },
+        {
+          "label": "Run Actions Usage Dashboard",
+          "type": "shell",
+          "command": "${workspaceFolder}/run.sh",
+          "problemMatcher": []
+      },
     ],
     "inputs": [
         {
