@@ -1,9 +1,9 @@
-title: Actions Workflow Dashboard
-about: eroullit/actions-workflow-dashboard
-about_url: https://github.com/eroullit/actions-workflow-dashboard
+title: Usage Report Dashboard
+about: eroullit/usage-report-dashboard
+about_url: https://github.com/eroullit/usage-report-dashboard
 description_html: |-
   <div class="message-info">
-    <p>Welcome to the <a href="https://github.com/eroullit/actions-workflow-dashboard">Actions Workflow Dashboard</a>!</p>
+    <p>Welcome to the <a href="https://github.com/eroullit/usage-report-dashboard">Usage Report Dashboard</a>!</p>
     <ul class="bullets">
       <li>Browse dashboards at <a href="/-/dashboards">/-/dashboards</a></li>
     </ul>
