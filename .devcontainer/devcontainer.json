@@ -1,8 +1,5 @@
 {
     "waitFor": "onCreateCommand",
-    "hostRequirements": {
-      "cpus": 4
-    },
     "onCreateCommand": "pipx install sqlite-utils && pipx install datasette && datasette install datasette-dashboards datasette-codespaces",
     "customizations": {
       "vscode": {
