@@ -21,7 +21,7 @@ Drag and drop your usage report in the explorer section of your Codespaces
 
 ### Prepare your Usage Report
 
-Your usage report is a CSV file which must be converted as a database. A Task can be invoked to do this operation automatically
+Your usage report is a CSV file which must be converted as a database. A Task can be invoked to do this operation automatically.
 
 ![Run Task](./docs/img/run-task.png)
 
@@ -29,7 +29,7 @@ Your usage report is a CSV file which must be converted as a database. A Task ca
 
 ![Usage Report Picker](./docs/img/file-picker.png)
 
-Once the usage report has been selected, the conversion will start and once completed the dashboard will start automatically.
+Once the usage report has been selected, the conversion will start when once completed the dashboard will start automatically.
 If the usage report has already been converted, the "Run Actions Usage Dashboard" task can be used to directly start the dashboard based on existing data.
 
 ### Access your Dashboard
