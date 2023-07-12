@@ -11,7 +11,7 @@ You [Usage Report CSV file](https://docs.github.com/en/enterprise-cloud%2540late
 
 ### Start a Codespaces from this repository
 
-[![Start Actions Usage Dashboard On Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/?repo=eroullit%2Factions-workflow-dashboard&ref=main)
+[![Start Usage Report Dashboard On Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/?repo=eroullit%2Fusage-report-dashboard&ref=main)
 
 ### Upload your Usage Report
 
@@ -30,7 +30,7 @@ Your usage report is a CSV file which must be converted as a database. A Task ca
 ![Usage Report Picker](./docs/img/file-picker.png)
 
 Once the usage report has been selected, the conversion will start when once completed the dashboard will start automatically.
-If the usage report has already been converted, the "Run Actions Usage Dashboard" task can be used to directly start the dashboard based on existing data.
+If the usage report has already been converted, the "Run Usage Report Dashboard" task can be used to directly start the dashboard based on existing data.
 
 ### Access your Dashboard
 
@@ -38,7 +38,7 @@ If the usage report has already been converted, the "Run Actions Usage Dashboard
 
 ![Dashboard redirect](./docs/img/dashboard-redirect.png)
 
-![Actions Usage statistics dashboard](./docs/img/actions-usage-statistics.png)
+![Usage Report dashboard](./docs/img/actions-usage-statistics.png)
 
 ## Use it locally
 
