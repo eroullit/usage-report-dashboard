@@ -53,11 +53,52 @@ plugins:
               [[ AND owner = :owner ]]
               GROUP BY date
           library: vega-lite
-          display:
-            mark: { type: line, tooltip: true }
-            encoding:
-              x: { field: date, type: temporal, timeUnit: yearmonthdate }
-              y: { field: count, type: quantitative }
+          display: {
+            "layer": [
+              {
+                "mark": {
+                  "type": "point",
+                  "filled": true,
+                  "tooltip": true
+                },
+                "encoding": {
+                  "x": {
+                    "field": "date",
+                    "type": "temporal",
+                    "timeUnit": "yearmonthdate"
+                  },
+                  "y": {
+                    "field": "count",
+                    "type": "quantitative"
+                  }
+                }
+              },
+              {
+                "mark": {
+                  "type": "point",
+                  "filled": true,
+                  "color": "firebrick",
+                  "tooltip": true
+                },
+                "transform": [
+                  {
+                    "loess": "count",
+                    "on": "date"
+                  }
+                ],
+                "encoding": {
+                  "x": {
+                    "field": "date",
+                    "type": "temporal",
+                    "timeUnit": "yearmonthdate"
+                  },
+                  "y": {
+                    "field": "count",
+                    "type": "quantitative"
+                  }
+                }
+              }
+            ]}
 
         actions-minutes-daily-tracker:
           title: Daily minutes usage tracker
