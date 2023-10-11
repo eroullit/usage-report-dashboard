@@ -23,7 +23,7 @@ plugins:
       layout:
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
-        - [actions-minutes-daily, actions-run-daily]
+        - [actions-minutes-daily, actions-price-daily]
         - [actions-duration-ranking, actions-duration-ranking]
         - [actions-duration-scatterplot, actions-duration-scatterplot]
         - [actions-price-ranking, actions-price-ranking]
@@ -156,6 +156,68 @@ plugins:
                   },
                   "y": {
                     "field": "quantity",
+                    "type": "quantitative"
+                  }
+                }
+              }
+            ]}
+
+        # Add a new chart here to display the daily actions price over time and its loess curve
+        actions-price-daily:
+          title: Daily cost to run workflows
+          db: usage
+          query: >-
+            SELECT
+              date(date) as date,
+              SUM(price) as price
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+              GROUP BY date
+          library: vega-lite
+          display: {
+            "layer": [
+              {
+                "mark": {
+                  "type": "point",
+                  "filled": true,
+                  "tooltip": true
+                },
+                "encoding": {
+                  "x": {
+                    "field": "date",
+                    "type": "temporal",
+                    "timeUnit": "yearmonthdate"
+                  },
+                  "y": {
+                    "field": "price",
+                    "type": "quantitative"
+                  }
+                }
+              },
+              {
+                "mark": {
+                  "type": "point",
+                  "filled": true,
+                  "color": "firebrick",
+                  "tooltip": true
+                },
+                "transform": [
+                  {
+                    "loess": "price",
+                    "on": "date"
+                  }
+                ],
+                "encoding": {
+                  "x": {
+                    "field": "date",
+                    "type": "temporal",
+                    "timeUnit": "yearmonthdate"
+                  },
+                  "y": {
+                    "field": "price",
                     "type": "quantitative"
                   }
                 }
