@@ -21,6 +21,7 @@ plugins:
         allow_fullscreen: true
         autorefresh: false
       layout:
+        - [actions-top-repo-minutes-bar, .]
         - [actions-top-repo-minutes, actions-top-repo-price]
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
@@ -41,6 +42,37 @@ plugins:
           db: usage
           query: SELECT DISTINCT owner FROM usage ORDER BY owner
       charts:
+        actions-top-repo-minutes-bar:
+          title: Top 10 repositories by execution time
+          db: usage
+          query: >-
+            SELECT
+              Owner || "/" || "Repository Slug" as repo,
+              CAST(quantity as INTEGER) as quantity,
+              Owner || "/" || "Repository Slug" || "/" || "Actions Workflow" as workflow,
+              "Actions Workflow"
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+            GROUP BY quantity, workflow
+            ORDER BY quantity
+          library: vega-lite
+          display:
+            mark: { type: bar, tooltip: true }
+            params:
+              - name: highlight
+                select: { fields: [workflow], type: point, "on": mouseover }
+                bind: legend
+            encoding:
+              y: { field: repo, type: nominal, sort: -x }
+              x: { aggregate: sum, field: quantity }
+              color: { field: workflow, type: nominal }
+              opacity:
+                condition: { param: highlight, value: 1 }
+                value: 0.2
+
         actions-top-repo-minutes:
           title: Top 10 repositories by execution time
           db: usage
