@@ -21,6 +21,7 @@ plugins:
         allow_fullscreen: true
         autorefresh: false
       layout:
+        - [actions-top-repo-minutes, actions-top-repo-price]
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
         - [actions-minutes-daily, actions-price-daily]
@@ -40,6 +41,86 @@ plugins:
           db: usage
           query: SELECT DISTINCT owner FROM usage ORDER BY owner
       charts:
+        actions-top-repo-minutes:
+          title: Top 10 repositories by execution time
+          db: usage
+          query: >-
+            SELECT
+              "Repository Slug",
+              SUM(CAST(quantity as INTEGER)) as quantity
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+              GROUP BY "Repository Slug"
+              ORDER BY quantity DESC
+              LIMIT 10
+          library: vega-lite
+          display: {
+            "mark": {
+              "type": "bar",
+              "tooltip": true
+            },
+            "encoding": {
+              "x": {
+                "field": "quantity",
+                "type": "quantitative",
+                "axis": {
+                  "title": "Execution time (minutes)"
+                }
+              },
+              "y": {
+                "field": "Repository Slug",
+                "type": "nominal",
+                "sort": "-x",
+                "axis": {
+                  "title": "Repository"
+                }
+              }
+            }
+          }
+
+        actions-top-repo-price:
+          title: Top 10 repositories by cost
+          db: usage
+          query: >-
+            SELECT
+              "Repository Slug",
+              SUM(price) as price
+            FROM usage
+            WHERE Product = 'Actions'
+              [[ AND date >= date(:date_start) ]]
+              [[ AND date <= date(:date_end) ]]
+              [[ AND owner = :owner ]]
+              GROUP BY "Repository Slug"
+              ORDER BY price DESC
+              LIMIT 10
+          library: vega-lite
+          display: {
+            "mark": {
+              "type": "bar",
+              "tooltip": true
+            },
+            "encoding": {
+              "x": {
+                "field": "price",
+                "type": "quantitative",
+                "axis": {
+                  "title": "Cost (USD)"
+                }
+              },
+              "y": {
+                "field": "Repository Slug",
+                "type": "nominal",
+                "sort": "-x",
+                "axis": {
+                  "title": "Repository"
+                }
+              }
+            }
+          }
+
         actions-run-daily:
           title: Daily executed workflow count
           db: usage
