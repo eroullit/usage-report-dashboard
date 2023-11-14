@@ -48,16 +48,29 @@ plugins:
           query: >-
             SELECT
               Owner || "/" || "Repository Slug" as repo,
-              CAST(quantity as INTEGER) as quantity,
               Owner || "/" || "Repository Slug" || "/" || "Actions Workflow" as workflow,
-              "Actions Workflow"
+              CAST(quantity as INTEGER) as quantity
             FROM usage
-            WHERE Product = 'Actions'
+            WHERE (Owner || "/" || "Repository Slug") IN (
+                SELECT repo
+                FROM (
+                  SELECT
+                    Owner || "/" || "Repository Slug" as repo,
+                    SUM(CAST(quantity as INTEGER)) as total_quantity
+                  FROM usage
+                  WHERE Product = 'Actions'
+                    [[ AND date >= date(:date_start) ]]
+                    [[ AND date <= date(:date_end) ]]
+                    [[ AND owner = :owner ]]
+                  GROUP BY repo
+                  ORDER BY total_quantity DESC
+                  LIMIT 10
+                )
+              )
+              AND Product = 'Actions'
               [[ AND date >= date(:date_start) ]]
               [[ AND date <= date(:date_end) ]]
               [[ AND owner = :owner ]]
-            GROUP BY quantity, workflow
-            ORDER BY quantity
           library: vega-lite
           display:
             mark: { type: bar, tooltip: true }
@@ -89,29 +102,26 @@ plugins:
               ORDER BY quantity DESC
               LIMIT 10
           library: vega-lite
-          display: {
-            "mark": {
-              "type": "bar",
-              "tooltip": true
-            },
-            "encoding": {
-              "x": {
-                "field": "quantity",
-                "type": "quantitative",
-                "axis": {
-                  "title": "Execution time (minutes)"
-                }
-              },
-              "y": {
-                "field": "repo",
-                "type": "nominal",
-                "sort": "-x",
-                "axis": {
-                  "title": "Repository"
-                }
-              }
+          display:
+            {
+              "mark": { "type": "bar", "tooltip": true },
+              "encoding":
+                {
+                  "x":
+                    {
+                      "field": "quantity",
+                      "type": "quantitative",
+                      "axis": { "title": "Execution time (minutes)" },
+                    },
+                  "y":
+                    {
+                      "field": "repo",
+                      "type": "nominal",
+                      "sort": "-x",
+                      "axis": { "title": "Repository" },
+                    },
+                },
             }
-          }
 
         actions-top-repo-price:
           title: Top 10 repositories by cost
@@ -129,29 +139,26 @@ plugins:
               ORDER BY price DESC
               LIMIT 10
           library: vega-lite
-          display: {
-            "mark": {
-              "type": "bar",
-              "tooltip": true
-            },
-            "encoding": {
-              "x": {
-                "field": "price",
-                "type": "quantitative",
-                "axis": {
-                  "title": "Cost (USD)"
-                }
-              },
-              "y": {
-                "field": "repo",
-                "type": "nominal",
-                "sort": "-x",
-                "axis": {
-                  "title": "Repository"
-                }
-              }
+          display:
+            {
+              "mark": { "type": "bar", "tooltip": true },
+              "encoding":
+                {
+                  "x":
+                    {
+                      "field": "price",
+                      "type": "quantitative",
+                      "axis": { "title": "Cost (USD)" },
+                    },
+                  "y":
+                    {
+                      "field": "repo",
+                      "type": "nominal",
+                      "sort": "-x",
+                      "axis": { "title": "Repository" },
+                    },
+                },
             }
-          }
 
         actions-run-daily:
           title: Daily executed workflow count
@@ -167,52 +174,46 @@ plugins:
               [[ AND owner = :owner ]]
               GROUP BY date
           library: vega-lite
-          display: {
-            "layer": [
-              {
-                "mark": {
-                  "type": "point",
-                  "filled": true,
-                  "tooltip": true
-                },
-                "encoding": {
-                  "x": {
-                    "field": "date",
-                    "type": "temporal",
-                    "timeUnit": "yearmonthdate"
-                  },
-                  "y": {
-                    "field": "count",
-                    "type": "quantitative"
-                  }
-                }
-              },
-              {
-                "mark": {
-                  "type": "point",
-                  "filled": true,
-                  "color": "firebrick",
-                  "tooltip": true
-                },
-                "transform": [
+          display:
+            {
+              "layer":
+                [
                   {
-                    "loess": "count",
-                    "on": "date"
-                  }
-                ],
-                "encoding": {
-                  "x": {
-                    "field": "date",
-                    "type": "temporal",
-                    "timeUnit": "yearmonthdate"
+                    "mark":
+                      { "type": "point", "filled": true, "tooltip": true },
+                    "encoding":
+                      {
+                        "x":
+                          {
+                            "field": "date",
+                            "type": "temporal",
+                            "timeUnit": "yearmonthdate",
+                          },
+                        "y": { "field": "count", "type": "quantitative" },
+                      },
                   },
-                  "y": {
-                    "field": "count",
-                    "type": "quantitative"
-                  }
-                }
-              }
-            ]}
+                  {
+                    "mark":
+                      {
+                        "type": "point",
+                        "filled": true,
+                        "color": "firebrick",
+                        "tooltip": true,
+                      },
+                    "transform": [{ "loess": "count", "on": "date" }],
+                    "encoding":
+                      {
+                        "x":
+                          {
+                            "field": "date",
+                            "type": "temporal",
+                            "timeUnit": "yearmonthdate",
+                          },
+                        "y": { "field": "count", "type": "quantitative" },
+                      },
+                  },
+                ],
+            }
 
         actions-minutes-daily:
           title: Daily execution time
@@ -228,52 +229,46 @@ plugins:
               [[ AND owner = :owner ]]
               GROUP BY date
           library: vega-lite
-          display: {
-            "layer": [
-              {
-                "mark": {
-                  "type": "point",
-                  "filled": true,
-                  "tooltip": true
-                },
-                "encoding": {
-                  "x": {
-                    "field": "date",
-                    "type": "temporal",
-                    "timeUnit": "yearmonthdate"
-                  },
-                  "y": {
-                    "field": "quantity",
-                    "type": "quantitative"
-                  }
-                }
-              },
-              {
-                "mark": {
-                  "type": "point",
-                  "filled": true,
-                  "color": "firebrick",
-                  "tooltip": true
-                },
-                "transform": [
+          display:
+            {
+              "layer":
+                [
                   {
-                    "loess": "quantity",
-                    "on": "date"
-                  }
-                ],
-                "encoding": {
-                  "x": {
-                    "field": "date",
-                    "type": "temporal",
-                    "timeUnit": "yearmonthdate"
+                    "mark":
+                      { "type": "point", "filled": true, "tooltip": true },
+                    "encoding":
+                      {
+                        "x":
+                          {
+                            "field": "date",
+                            "type": "temporal",
+                            "timeUnit": "yearmonthdate",
+                          },
+                        "y": { "field": "quantity", "type": "quantitative" },
+                      },
                   },
-                  "y": {
-                    "field": "quantity",
-                    "type": "quantitative"
-                  }
-                }
-              }
-            ]}
+                  {
+                    "mark":
+                      {
+                        "type": "point",
+                        "filled": true,
+                        "color": "firebrick",
+                        "tooltip": true,
+                      },
+                    "transform": [{ "loess": "quantity", "on": "date" }],
+                    "encoding":
+                      {
+                        "x":
+                          {
+                            "field": "date",
+                            "type": "temporal",
+                            "timeUnit": "yearmonthdate",
+                          },
+                        "y": { "field": "quantity", "type": "quantitative" },
+                      },
+                  },
+                ],
+            }
 
         # Add a new chart here to display the daily actions price over time and its loess curve
         actions-price-daily:
@@ -290,52 +285,46 @@ plugins:
               [[ AND owner = :owner ]]
               GROUP BY date
           library: vega-lite
-          display: {
-            "layer": [
-              {
-                "mark": {
-                  "type": "point",
-                  "filled": true,
-                  "tooltip": true
-                },
-                "encoding": {
-                  "x": {
-                    "field": "date",
-                    "type": "temporal",
-                    "timeUnit": "yearmonthdate"
-                  },
-                  "y": {
-                    "field": "price",
-                    "type": "quantitative"
-                  }
-                }
-              },
-              {
-                "mark": {
-                  "type": "point",
-                  "filled": true,
-                  "color": "firebrick",
-                  "tooltip": true
-                },
-                "transform": [
+          display:
+            {
+              "layer":
+                [
                   {
-                    "loess": "price",
-                    "on": "date"
-                  }
-                ],
-                "encoding": {
-                  "x": {
-                    "field": "date",
-                    "type": "temporal",
-                    "timeUnit": "yearmonthdate"
+                    "mark":
+                      { "type": "point", "filled": true, "tooltip": true },
+                    "encoding":
+                      {
+                        "x":
+                          {
+                            "field": "date",
+                            "type": "temporal",
+                            "timeUnit": "yearmonthdate",
+                          },
+                        "y": { "field": "price", "type": "quantitative" },
+                      },
                   },
-                  "y": {
-                    "field": "price",
-                    "type": "quantitative"
-                  }
-                }
-              }
-            ]}
+                  {
+                    "mark":
+                      {
+                        "type": "point",
+                        "filled": true,
+                        "color": "firebrick",
+                        "tooltip": true,
+                      },
+                    "transform": [{ "loess": "price", "on": "date" }],
+                    "encoding":
+                      {
+                        "x":
+                          {
+                            "field": "date",
+                            "type": "temporal",
+                            "timeUnit": "yearmonthdate",
+                          },
+                        "y": { "field": "price", "type": "quantitative" },
+                      },
+                  },
+                ],
+            }
 
         actions-minutes-daily-tracker:
           title: Daily minutes usage tracker
@@ -389,7 +378,7 @@ plugins:
                 bind: legend
             encoding:
               x: { aggregate: sum, field: TotalQuantity, type: quantitative }
-              y: { field: date, type: ordinal, timeUnit: month, as: month}
+              y: { field: date, type: ordinal, timeUnit: month, as: month }
               color: { field: SKU, type: nominal }
               opacity:
                 condition: { param: highlight, value: 1 }
@@ -397,7 +386,7 @@ plugins:
 
         runner-types-ranking:
           title: Number of runs by runner types
-          db: usage 
+          db: usage
           query: >-
             SELECT
               SKU,
@@ -446,8 +435,8 @@ plugins:
                 select: { fields: [SKU], type: point, "on": mouseover }
                 bind: legend
             encoding:
-              y: { field: quantity, bin: {extent: [0, 45]}, type: ordinal }
-              x: { aggregate: sum, field: count}
+              y: { field: quantity, bin: { extent: [0, 45] }, type: ordinal }
+              x: { aggregate: sum, field: count }
               color: { field: SKU, type: nominal }
               opacity:
                 condition: { param: highlight, value: 1 }
@@ -471,7 +460,7 @@ plugins:
               [[ AND owner = :owner ]]
           library: vega-lite
           display:
-            mark: { type: point, tooltip: {content: data} }
+            mark: { type: point, tooltip: { content: data } }
             params:
               - name: highlight
                 select: { fields: [SKU], type: point, "on": mouseover }
@@ -501,6 +490,6 @@ plugins:
           display:
             mark: rect
             encoding:
-              x: { field: quantity, bin: {maxbins: 100}, type: quantitative }
-              y: { field: price, bin: {maxbins: 50}, type: quantitative}
+              x: { field: quantity, bin: { maxbins: 100 }, type: quantitative }
+              y: { field: price, bin: { maxbins: 50 }, type: quantitative }
               color: { aggregate: count, type: quantitative }
