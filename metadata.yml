@@ -21,7 +21,7 @@ plugins:
         allow_fullscreen: true
         autorefresh: false
       layout:
-        - [actions-top-repo-minutes-bar, .]
+        - [actions-top-repo-minutes-bar, actions-top-repo-minutes-bar]
         - [actions-top-repo-minutes, actions-top-repo-price]
         - [actions-minutes-monthly-tracker, actions-minutes-daily-tracker]
         - [runner-types-ranking, actions-run-daily]
