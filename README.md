@@ -5,7 +5,7 @@
 This tool will directly expose an SQL interface to the user, meaning the user is free to query, manipulate and refine data on its Actions usage.
 Its usage is purely offline. It neither requires data to be sent to a third party nor does it use API calls to GitHub.
 
-Your [Usage Report CSV file](https://docs.github.com/en/enterprise-cloud%2540latest/billing/managing-billing-for-github-actions/viewing-your-github-actions-usage#viewing-github-actions-usage-for-your-enterprise-account) can be requested and sent to your email address.
+Your [Usage Report CSV file](https://docs.github.com/en/enterprise-cloud@latest/billing/managing-billing-for-github-actions/viewing-your-github-actions-usage#viewing-github-actions-usage-for-your-enterprise-account) can be requested and sent to your email address.
 
 ## Use it in a Codespaces
 
